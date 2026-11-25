@@ -68,9 +68,16 @@ POST http://127.0.0.1/ask   -> 200 {"answer":"Tôi là AI agent được deploy 
 ## Part 3: Cloud Deployment
 
 ### Exercise 3.1 / 3.2: Deploy agent Part 6
-- **Nền tảng chính:** `[Chờ deploy Railway hoặc Render sau khi PASS 12/12]`
-- **Public URL:** `[Chờ URL public]`
-- **Screenshots:** xem `DEPLOYMENT.md` và thư mục `screenshots/` (`dashboard.png`, `running.png`, `test.png`).
+- **Nền tảng chính:** Render (Web Service Docker từ thư mục `06-lab-complete/` + Render Key Value / Redis)
+- **Public URL:** https://k5-l3a-day14-nguyenthetruong-2a202603393.onrender.com
+- **Kết quả 4 lệnh tự kiểm CP6:**
+```text
+GET /health -> 200
+GET /ready  -> 200
+POST /ask (no key)   -> 401
+POST /ask (with key) -> 200
+```
+- **Screenshots:** xem [DEPLOYMENT.md](DEPLOYMENT.md) và thư mục `screenshots/` (`dashboard.png`, `running.png`, `test.png`).
 
 ### So sánh `railway.toml` vs `render.yaml`
 - **Cấu trúc & phạm vi:** `railway.toml` (TOML) gọn nhẹ, chủ yếu khai báo cấu hình build/deploy cho 1 service (`[build] builder`, `[deploy] startCommand`, `healthcheckPath`, `restartPolicyType`). `render.yaml` (YAML Blueprint) là Infrastructure-as-Code cho phép khai báo nhiều resource trong cùng file (cả `type: web` lẫn `type: redis`, region, plan free/starter, `autoDeploy`, và danh sách `envVars`).
