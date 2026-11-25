@@ -68,7 +68,11 @@ Agent v2 thêm bước retrieval (RAG) khiến prompt dài hơn nên `avg_tokens
 ## 4. Observability stack (production)
 
 - **Kiểm tra `promtool` unit test (`alert_rules_test.yml`):** `SUCCESS`
-- **Kiểm tra `GET http://localhost:8080/metrics`:** Trả về **HTTP 404** vì `nginx.conf` cấu hình `location = /metrics { return 404; }` để không lộ thông tin nội bộ ra ngoài; chỉ Prometheus trong mạng `obs_net` mới scrape trực tiếp `agent:8000/metrics`.
+- **Trả lời Exercise 7.4 (quan sát từ `screenshots/grafana-dashboard.png` và stack):**
+  1. **p95 và avg:** Lúc có tải (`MOCK_SLOW_RATE=0.3`), `Latency p95` đạt **1.87 s** trong khi `p50` ~200 ms và `avg` ~600–700 ms. Khoảng cách lớn giữa `p95` và `avg` phản ánh tail latency — đa số request vẫn nhanh nhưng một tỉ lệ request chậm kéo trải nghiệm đuôi dài lên gần 2 giây.
+  2. **Panel "Requests/s theo instance":** Có — hai đường của `172.18.0.4:8000` và `172.18.0.6:8000` trùng khít nhau (~8 req/s mỗi instance), chứng tỏ Nginx chia đều traffic theo round-robin.
+  3. **Vì sao `input tokens/s` lớn hơn `output tokens/s`:** Vì input gửi vào LLM gồm `SYSTEM_PROMPT` + context retrieval (RAG của agent v2) + câu hỏi (~90–120 tokens), dài hơn câu trả lời ngắn gọn ở output (~40–55 tokens).
+  4. **`curl http://localhost:8080/metrics` trả về gì:** Trả về **HTTP 404** vì `nginx.conf` cấu hình `location = /metrics { return 404; }` để không lộ metrics nội bộ ra ngoài; chỉ Prometheus trong mạng `obs_net` mới scrape trực tiếp `agent:8000/metrics`.
 
 ### 4.1 Screenshot
 
